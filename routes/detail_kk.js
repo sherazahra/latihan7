@@ -6,7 +6,7 @@ const connect = require('../config/db.js');
 
 router.get("/", (req, res) => {
   connect.query(
-    "SELECT * FROM detail_kk INNER JOIN kartu_keluarga ON detail_kk.no_kk = kartu_keluarga.no_kk INNER JOIN ktp ON detail_kk.nik = ktp.nik",
+    "SELECT dk.status_hubungan_dalam_keluarga, ktp.nama_lengkap, a.nama_lengkap as nama_ayah, i.nama_lengkap as nama_ibu FROM detail_kk as dk INNER JOIN ktp ON dk.nik = ktp.nik INNER JOIN ktp as a ON dk.ayah = a.nik INNER JOIN ktp as i ON dk.ibu = i.nik",
     (err, rows) => {
       if (err) {
         return res.status(500).json({
@@ -71,8 +71,7 @@ router.post(
 router.get("/(:id)", (req, res) => {
   let id = req.params.id;
   connect.query(
-    `SELECT * FROM detail_kk INNER JOIN kartu_keluarga ON detail_kk.no_kk = kartu_keluarga.no_kk 
-    INNER JOIN ktp ON detail_kk.nik = ktp.nik WHERE id_detail='${id}'`,
+    `SELECT dk.status_hubungan_dalam_keluarga, ktp.nama_lengkap, a.nama_lengkap as nama_ayah, i.nama_lengkap as nama_ibu FROM detail_kk as dk INNER JOIN ktp ON dk.nik = ktp.nik INNER JOIN ktp as a ON dk.ayah = a.nik INNER JOIN ktp as i ON dk.ibu = i.nik WHERE id_detail='${id}'`,
     (err, rows) => {
       if (err) {
         return res.status(500).json({
